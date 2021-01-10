@@ -11,22 +11,26 @@
           label="Nombre y apellido"
           :rules="formRules.fullname"
           v-model="form.fullname"
+          counter="150"
         />
         <v-text-field
           label="Correo (Ej.: alquiler@xmail.com)"
           type="email"
           :rules="formRules.email"
           v-model="form.email"
+          counter="150"
         />
         <v-text-field
           label="Celular (Ej.: 097X-XXXXXX)"
           :rules="formRules.phone"
           v-model="form.phone"
+          counter="11"
         />
         <v-text-field
           label="Dirección"
           :rules="formRules.address"
           v-model="form.address"
+          counter="200"
         />
 
         <div class="form__passwords">
@@ -37,12 +41,14 @@
             type="password"
             :rules="formRules.newPassword"
             v-model="form.newPassword"
+            counter="25"
           />
           <v-text-field
             label="Confirmar su nueva contraseña"
             type="password"
             :rules="formRules.newPassword2"
             v-model="form.newPassword2"
+            counter="25"
           />
         </div>
 
@@ -104,7 +110,19 @@ export default {
         );
       };
 
+      const validateEmail = (v) => {
+        const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+        return (
+          re.test(String(v).toLowerCase()) ||
+          "El correo ingresado no es válido."
+        );
+      };
+
       formRules.fullname.push(notEmptyRule);
+
+      formRules.email.push(validateEmail);
+      formRules.email.push(notEmptyRule);
 
       formRules.phone.push(notEmptyRule);
 
@@ -116,8 +134,6 @@ export default {
       return formRules;
     },
   },
-
-  methods: {},
 };
 </script>
 
