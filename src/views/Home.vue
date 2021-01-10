@@ -1,7 +1,7 @@
 <template>
   <div class="home">
-    <announce-card />
-    <announce-card />
+    <announce-card class="pb-3 my-2" />
+    <announce-card class="pb-3 my-2" />
   </div>
 </template>
 
