@@ -6,6 +6,7 @@
     grow
     @change="changeView"
     mandatory
+    class="bottom-navbar"
   >
     <v-btn>
       <span>Inicio</span>
@@ -60,3 +61,10 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+.bottom-navbar {
+  border-top: 1px solid #c0c0c0;
+  box-sizing: content-box;
+}
+</style>
