@@ -19,8 +19,11 @@
     </v-card-text>
 
     <v-card-actions class="justify-end">
-      <v-btn color="primary">
+      <v-btn v-if="!saved" color="primary">
         Guardar
+      </v-btn>
+      <v-btn v-else color="error">
+        Descartar
       </v-btn>
       <v-btn color="primary">
         Contactar
@@ -32,6 +35,13 @@
 <script>
 export default {
   name: "AnnounceCard",
+
+  props: {
+    saved: {
+      type: Boolean,
+      default: false,
+    },
+  },
 
   data() {
     return {};
