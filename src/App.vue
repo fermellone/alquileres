@@ -1,27 +1,32 @@
 <template>
   <v-app>
-    <v-app-bar app color="primary" dark>
-      <div class="d-flex align-center"></div>
-    </v-app-bar>
-
-    <v-main>
-      <announce-card />
-    </v-main>
+    <div id="app">
+      <!-- <router-link to="/">Home</router-link> |
+        <router-link to="/about">About</router-link> -->
+      <nav-bar :title="title">
+        <router-view />
+      </nav-bar>
+      <bottom-nav-bar />
+    </div>
   </v-app>
 </template>
 
 <script>
-import AnnounceCard from "./components/AnnounceCard";
+import NavBar from "@/components/NavBar";
+import BottomNavBar from "@/components/BottomNavBar";
 
 export default {
-  name: "App",
-
   components: {
-    AnnounceCard,
+    NavBar,
+    BottomNavBar,
   },
 
-  data: () => ({
-    //
-  }),
+  data() {
+    return {
+      title: "Inicio",
+    };
+  },
 };
 </script>
+
+<style lang="scss"></style>
