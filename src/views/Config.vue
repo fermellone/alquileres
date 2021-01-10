@@ -119,12 +119,29 @@ export default {
         );
       };
 
+      const validatePhone = (v) => {
+        const re = /[0-9]/;
+        const re2 = /^09/;
+
+        const [fp, sp] = v ? String(v).split("-") : "";
+
+        return (
+          (re.test(String(fp).toLowerCase()) &&
+            re2.test(String(fp).toLowerCase()) &&
+            re.test(String(sp).toLowerCase()) &&
+            v.length == 11 &&
+            v.charAt(4) === "-") ||
+          "El número ingresado no es válido."
+        );
+      };
+
       formRules.fullname.push(notEmptyRule);
 
       formRules.email.push(validateEmail);
       formRules.email.push(notEmptyRule);
 
       formRules.phone.push(notEmptyRule);
+      formRules.phone.push(validatePhone);
 
       formRules.newPassword.push(notEmptyRule);
       formRules.newPassword.push(minLength);
