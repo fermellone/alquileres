@@ -21,10 +21,10 @@ export default {
     BottomNavBar,
   },
 
-  data() {
-    return {
-      title: "Inicio",
-    };
+  computed: {
+    title() {
+      return this.$store.state.navTitle;
+    },
   },
 };
 </script>
