@@ -2,40 +2,64 @@
   <v-container class="configs">
     <div class="avatar">
       <v-avatar size="150">
-        <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John" />
+        <img
+          :src="userData.profile_image"
+          :alt="userData.fullname + ' profile image'"
+        />
       </v-avatar>
     </div>
     <div class="form">
       <v-form v-model="isValid">
-        <v-text-field
+        <alq-text-field
           label="Nombre y apellido"
           :rules="formRules.fullname"
           v-model="form.fullname"
+          required
           counter="150"
         />
-        <v-text-field
+        <alq-text-field
           label="Correo (Ej.: alquiler@xmail.com)"
           type="email"
           :rules="formRules.email"
           v-model="form.email"
+          required
           counter="150"
         />
-        <v-text-field
+        <alq-text-field
           label="Celular (Ej.: 097X-XXXXXX)"
           :rules="formRules.phone"
           v-model="form.phone"
+          required
           counter="11"
         />
-        <v-text-field
+        <alq-text-field
           label="Dirección"
           :rules="formRules.address"
           v-model="form.address"
           counter="200"
         />
+        <v-autocomplete
+          label="Departamento"
+          clearable
+          :items="departmentsList"
+          v-model="form.department"
+          item-text="name"
+          item-value="id"
+          counter="200"
+        />
+        <v-autocomplete
+          label="Ciudad"
+          clearable
+          :items="citiesList"
+          v-model="form.city"
+          item-text="name"
+          item-value="id"
+          counter="200"
+        />
 
         <div class="form__passwords">
           <small>Quiere cambiar su contraseña?</small>
-          <v-text-field
+          <alq-text-field
             class="mt-1"
             label="Nueva contraseña"
             type="password"
@@ -43,7 +67,7 @@
             v-model="form.newPassword"
             counter="25"
           />
-          <v-text-field
+          <alq-text-field
             label="Confirmar su nueva contraseña"
             type="password"
             :rules="formRules.newPassword2"
@@ -63,23 +87,31 @@
 </template>
 
 <script>
+import { getData } from "@/api/requests";
+
+import AlqTextField from "@/components/inputs/AlqTextField";
+
 export default {
   name: "Configs",
 
-  components: {},
+  components: { AlqTextField },
 
   data() {
     return {
       isValid: false,
 
       form: {
-        fullname: [],
-        email: [],
-        phone: [],
-        newPassword: [],
-        newPassword2: [],
-        address: [],
+        fullname: "",
+        email: "",
+        phone: "",
+        address: "",
+        department: null,
+        city: null,
+        newPassword: "",
+        newPassword2: "",
       },
+      departments: [],
+      cities: [],
     };
   },
 
@@ -89,13 +121,15 @@ export default {
         fullname: [],
         email: [],
         phone: [],
+        department: [],
+        city: [],
+        address: [],
         newPassword: [],
         newPassword2: [],
-        address: [],
       };
 
-      const notEmptyRule = (v) => {
-        return (v && v.length > 0) || "Este campo no puede estar vacío.";
+      const notEmptySelectRule = (v) => {
+        return v || "Este campo no puede estar vacío.";
       };
 
       const minLength = (v) => {
@@ -135,21 +169,95 @@ export default {
         );
       };
 
-      formRules.fullname.push(notEmptyRule);
-
       formRules.email.push(validateEmail);
-      formRules.email.push(notEmptyRule);
 
-      formRules.phone.push(notEmptyRule);
       formRules.phone.push(validatePhone);
 
-      formRules.newPassword.push(notEmptyRule);
+      formRules.department.push(notEmptySelectRule);
+      formRules.city.push(notEmptySelectRule);
+
       formRules.newPassword.push(minLength);
 
       formRules.newPassword2.push(newPassMustBeTheSame);
 
       return formRules;
     },
+
+    userData() {
+      return this.$store.state.user;
+    },
+
+    departmentsList() {
+      return this.departments;
+    },
+
+    citiesList() {
+      let result = this.cities;
+
+      if (this.department) {
+        result = this.cities.filter(
+          (city) => city.department_id === this.department
+        );
+      }
+
+      return result;
+    },
+  },
+
+  methods: {
+    fillUserData() {
+      const user = this.userData;
+
+      this.form = {
+        ...this.form,
+        fullname: user.fullname,
+        email: user.email,
+        phone: user.phone,
+        address: user.address,
+        department: user.department,
+        city: user.city,
+      };
+    },
+
+    async getDepartments() {
+      try {
+        const resp = await getData(
+          "https://apy-app.herokuapp.com/api/departamentos"
+        );
+        if (!resp.error) {
+          this.departments = resp.data.departments;
+        } else {
+          console.error("No se pudo cargar el selector de departamentos");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    async getCities() {
+      try {
+        const resp = await getData(
+          "https://apy-app.herokuapp.com/api/ciudades"
+        );
+        if (!resp.error) {
+          this.cities = resp.data.cities;
+        } else {
+          console.error("No se pudo cargar el selector de ciudades");
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+
+    fillSelectorsData() {
+      this.getDepartments();
+      this.getCities();
+    },
+  },
+
+  beforeMount() {
+    this.fillUserData();
+    this.fillSelectorsData();
   },
 };
 </script>

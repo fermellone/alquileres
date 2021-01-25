@@ -3,18 +3,18 @@
     <v-img
       class="white--text align-end"
       height="200px"
-      src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+      :src="announce.image_path"
     >
       <v-card-title>Hermosa casa a estrenar</v-card-title>
     </v-img>
 
     <v-card-subtitle class="pb-0">
-      Precio: Gs. 900.000
+      Precio: {{announce.price}}
     </v-card-subtitle>
 
     <v-card-text class="text--primary">
       <div>
-        2 habitaciones, 1 baño, cocina amoblada, patio frontal, patio trasero.
+        {{announce.description.join()}}
       </div>
     </v-card-text>
 
@@ -41,6 +41,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    announce: {
+      type: Object,
+      default: () => {}
+    }
   },
 
   data() {
